@@ -23,7 +23,7 @@ API REST para gestión de eventos de carreras e inscripciones de usuarios, desar
 
 1. **Clonar el repositorio**
    ```bash
-   git clone https://github.com/usuario/running-api.git
+   git clone https://github.com/eduuber77/Backend-proyecto-running.git
    ```
 
 2. **Instalar dependencias**
