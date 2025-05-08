@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql" // Puedes cambiarlo a "mysql", "sqlite", etc.
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                Int               @id @default(autoincrement())
+  nombre            String
+  apellidos         String
+  email             String            @unique
+  password          String
+  genero            String?
+  tipoUsuario       TipoUsuario       @default(ESTANDAR)
+  nivel             Int               @default(0) // Representará el nivel de estrellas (0-3)
+  participaciones   Participacion[]
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+}
+
+model Evento {
+  id                Int               @id @default(autoincrement())
+  nombre            String
+  descripcion       String?           @db.Text
+  ciudad            String
+  fecha             DateTime
+  nivelDificultad   NivelDificultad
+  imagenUrl         String            @db.Text
+  destacado         Boolean           @default(false)
+  participantes     Participacion[]
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+}
+
+model Participacion {
+  id                Int               @id @default(autoincrement())
+  userId            Int
+  eventoId          Int
+  usuario           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  evento            Evento            @relation(fields: [eventoId], references: [id], onDelete: Cascade)
+  fechaInscripcion  DateTime          @default(now())
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  @@unique([userId, eventoId]) // Evita inscripciones duplicadas
+}
+
+
+enum TipoUsuario {
+  ESTANDAR
+  CORREDOR
+}
+
+enum NivelDificultad {
+  PRINCIPIANTE
+  INTERMEDIO
+  AVANZADO
+}
